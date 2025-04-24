@@ -305,7 +305,12 @@ window.addEventListener('pointerdown', (event) => {
     placedStones.add(key);
     lastPlacedStone = [x, y, z]; // ここで更新
 
-    moveHistory.push(`${x},${y},${z}`);
+    moveHistory.push({
+  turn: moveHistory.length + 1,
+  player: currentTurn,
+  pos: [x, y, z]
+});
+
 
     flipStones(x, y, z, currentTurn); // ← 石をひっくり返す処理
     currentTurn = currentTurn === 'black' ? 'white' : 'black';
