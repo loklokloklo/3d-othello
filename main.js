@@ -5,6 +5,8 @@ import { CSS2DRenderer, CSS2DObject } from './libs/CSS2DRenderer.js';
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
 import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
 
+window.init = init;
+
 let scene, camera, renderer, labelRenderer, controls;
 let boardGroup;
 let currentTurn = 'black'; // 現在の手番（'black' または 'white'）
@@ -34,8 +36,6 @@ const database = getDatabase(app);
 const spacing = 1.2;
 const size = 4;
 
-
-init();
 
 function init() {
   scene = new THREE.Scene();
