@@ -51,9 +51,12 @@ function init() {
   camera.lookAt(0, 0, 0);
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setClearColor('#ccf2ff'); // 背景を薄い水色に設定（リロード時含む）
-  document.body.appendChild(renderer.domElement);
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace; // ← ここだけ変更
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+renderer.setClearColor('#ccf2ff'); // 背景を薄い水色に設定（リロード時含む）
+document.body.appendChild(renderer.domElement);
 
   labelRenderer = new CSS2DRenderer();
   labelRenderer.setSize(window.innerWidth, window.innerHeight);
@@ -66,17 +69,28 @@ function init() {
   controls.enableZoom = false;
   controls.target.set(3, 3, 3);
 
-  // ライト
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-  scene.add(ambientLight);
+  // ======== ライトの設定 ========
 
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-  directionalLight.position.set(10, 10, 10);
-  scene.add(directionalLight);
+// 柔らかい全体照明（強すぎ注意）
+const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
+scene.add(ambientLight);
 
-  const axesHelper = new THREE.AxesHelper(10); // 長さ10
+// 6方向からの平行光で全体を包む（どの向きでも白く見えるように）
+const directions = [
+  [10, 0, 0],    // +X
+  [-10, 0, 0],   // -X
+  [0, 10, 0],    // +Y
+  [0, -10, 0],   // -Y
+  [0, 0, 10],    // +Z
+  [0, 0, -10]    // -Z
+];
 
-scene.add(axesHelper);
+for (const [x, y, z] of directions) {
+  const light = new THREE.DirectionalLight(0xffffff, 0.4); // 控えめな強さ
+  light.position.set(x, y, z);
+  scene.add(light);
+}
+
 
 
 for (let x = 0; x < size; x++) {
@@ -88,7 +102,6 @@ for (let x = 0; x < size; x++) {
     }
   }
 }
-
 
 
   // ボード作成
